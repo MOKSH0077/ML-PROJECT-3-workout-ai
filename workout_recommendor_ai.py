@@ -3,6 +3,10 @@ import pandas as pd
 import joblib
 import random
 
+model = joblib.load("workout_model.pkl")
+ct = joblib.load("workout_column_transformer.pkl")
+scaler = joblib.load("workout_scaler.pkl")
+
 # ---------------- CONFIG ---------------- #
 st.set_page_config(page_title="AI Workout Planner", layout="wide")
 

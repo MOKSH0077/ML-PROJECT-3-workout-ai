@@ -8,14 +8,32 @@ ct = joblib.load("workout_column_transformer.pkl")
 scaler = joblib.load("workout_scaler.pkl")
 
 # ---------------- CONFIG ---------------- #
-st.set_page_config(page_title="AI Workout Planner", layout="wide")
+st.set_page_config(
+    page_title="AI Workout Planner",
+    layout="wide",
+    initial_sidebar_state="expanded"   # 
+)
 
 # ---------------- CUSTOM CSS ---------------- #
 st.markdown("""
 <style>
-body { background-color: #0f172a; color: white; }
-.block-container { padding-top: 2rem; }
+
+/*  Streamlit container responsive fix */
+.block-container {
+    padding-top: 2rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    max-width: 100%;
+}
+
+/*  Remove body override (cloud me break karta hai) */
+[data-testid="stAppViewContainer"] {
+    background-color: #0f172a;
+    color: white;
+}
+
 h1, h2, h3 { color: #38bdf8; }
+
 .stButton>button {
     background: linear-gradient(90deg, #0ea5e9, #22c55e);
     color: black;
@@ -24,12 +42,22 @@ h1, h2, h3 { color: #38bdf8; }
     height: 3em;
     width: 100%;
 }
+
 .card {
     background-color: #111827;
     padding: 1.2rem;
     border-radius: 16px;
     box-shadow: 0 0 10px rgba(0,0,0,0.4);
 }
+
+/*  Mobile + cloud responsive column fix */
+@media (max-width: 1200px) {
+    .block-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -102,7 +130,8 @@ with st.container():
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.subheader("👤 Body Profile")
 
-    c1, c2, c3 = st.columns(3)
+    c1, c2, c3 = st.columns([1,1,1])  #  explicit responsive columns
+
     with c1:
         age = st.slider("Age", 16, 60, 22)
 
@@ -119,7 +148,7 @@ with st.container():
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.subheader("🧠 Lifestyle & Experience")
 
-    c1, c2, c3 = st.columns(3)
+    c1, c2, c3 = st.columns([1,1,1])  #  fix
 
     with c1:
         activity = {"Sedentary":0, "Lightly Active":1, "Active":2, "Very Active":3}[st.selectbox("Activity Level", ["Sedentary","Lightly Active","Active","Very Active"])]
@@ -139,7 +168,7 @@ with st.container():
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.subheader("🎯 Goals & Setup")
 
-    c1, c2 = st.columns(2)
+    c1, c2 = st.columns([1,1])  #  fix
 
     with c1:
         equipment = {"Home Only":0, "Dumbbells":1, "Full Gym":2}[st.selectbox("Equipment Access", ["Home Only","Dumbbells","Full Gym"])]
@@ -153,7 +182,7 @@ with st.container():
 
 # ---------------- CENTERED PREDICTION ---------------- #
 st.markdown("<br>", unsafe_allow_html=True)
-col1, col2, col3 = st.columns([1, 2, 1])
+col1, col2, col3 = st.columns([1,2,1])
 
 with col2:
     st.markdown("<div class='card'>", unsafe_allow_html=True)
@@ -163,7 +192,7 @@ with col2:
         height_cm = (feet * 30.48) + (inches * 2.54)
         bmi = round(weight / ((height_cm / 100) ** 2), 2)
 
-        user_input = pd.DataFrame([[
+        user_input = pd.DataFrame([[ 
             age, height_cm, weight, bmi,
             activity, stress, sleep,
             experience, days, duration,
@@ -200,3 +229,4 @@ with col2:
                     st.write(f"• {e}")
 
     st.markdown("</div>", unsafe_allow_html=True)
+
